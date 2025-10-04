@@ -164,3 +164,46 @@ CREATE TABLE [User] (
     LastLogin DATETIME,
     Notes VARCHAR(255)
 );
+
+
+
+-- Recent Updates ( Feedback - Payment - Maintenance )
+
+-- ===========================
+-- Payment Table
+-- ===========================
+CREATE TABLE Payment (
+    PaymentID INT PRIMARY KEY IDENTITY(1,1),
+    TicketID INT NOT NULL,
+    Amount DECIMAL(10,2) NOT NULL,
+    PaymentMethod VARCHAR(50) NOT NULL, -- Cash, Card, Mobile
+    PaymentDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_Payment_Ticket FOREIGN KEY (TicketID) REFERENCES Ticket(TicketID)
+);
+
+-- ===========================
+-- Feedback Table
+-- ===========================
+CREATE TABLE Feedback (
+    FeedbackID INT PRIMARY KEY IDENTITY(1,1),
+    PassengerID INT NOT NULL,
+    TripID INT NOT NULL,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5), -- from 1 to 5
+    Comments NVARCHAR(500),
+    FeedbackDate DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_Feedback_Passenger FOREIGN KEY (PassengerID) REFERENCES Passenger(PassengerID),
+    CONSTRAINT FK_Feedback_Trip FOREIGN KEY (TripID) REFERENCES Trip(TripID)
+);
+
+-- ===========================
+-- Maintenance Table
+-- ===========================
+CREATE TABLE Maintenance (
+    MaintenanceID INT PRIMARY KEY IDENTITY(1,1),
+    BusID INT NOT NULL,
+    MaintenanceDate DATE NOT NULL,
+    Description NVARCHAR(500),
+    Cost DECIMAL(10,2),
+    NextDueDate DATE,
+    CONSTRAINT FK_Maintenance_Bus FOREIGN KEY (BusID) REFERENCES Bus(BusID)
+);
